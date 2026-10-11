@@ -1,0 +1,15 @@
+// HelixLang: Quorum Sensing & Synthetic Biology
+%pop = init_population "E.coli", OD600=0.5, volume="1mL"
+%pop_state = simulate_quorum %pop, time=120, AHL_production_rate=0.5
+
+%circuit_dna = load_genome "luxI_plasmid.fa"
+%topo_circuit = apply_topology %circuit_dna, sigma=-0.06
+
+%qs_promoter = evaluate_promoter "luxI", AHL_conc=%pop_state.AHL, Kd=1e-7
+
+if %qs_promoter.active:
+    %mRNA_circuit = transcribe %topo_circuit, promoter="luxI"
+    %proteome = ribosome_scan %mRNA_circuit, table=11, min_len=30
+    print "Circuit Activated. Proteins produced."
+else:
+    print "Quorum not reached. Circuit dormant."

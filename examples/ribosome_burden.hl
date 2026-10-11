@@ -1,0 +1,14 @@
+// HelixLang: Metabolic Engineering & Resource Allocation
+%operon_dna = load_genome "biofuel_pathway.fa"
+%topo_dna = apply_topology %operon_dna, sigma=-0.06
+%mRNA = transcribe %topo_dna, promoter="T7"
+
+%cell = init_cell "E.coli_K12", growth_rate=0.5, phase="exponential"
+
+%ribo_trace = simulate_ribosome %mRNA, host=%cell, max_ribosomes=45000
+
+if %ribo_trace.burden > 0.8:
+    %cell_state = update_cell %cell, state="stringent"
+    print "Warning: Construct triggered stringent response."
+else:
+    print "Construct is well-tolerated."

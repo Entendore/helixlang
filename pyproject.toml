@@ -1,0 +1,17 @@
+[project]
+name = "helixlang"
+version = "0.1.0"
+description = "HelixLang: A Typed Functional DSL for Multi-Scale Biophysics"
+requires-python = ">=3.9"
+authors = [{name = "HelixLang Project"}]
+license = {text = "MIT"}
+
+[project.scripts]
+helixlang = "helixlang.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["helixlang"]
