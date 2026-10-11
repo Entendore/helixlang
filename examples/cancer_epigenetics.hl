@@ -1,0 +1,14 @@
+// HelixLang: Precision Oncology & Epigenetics
+%ref_dna = load_genome "hg38_TP53.fa"
+%methyl_dna = load_bedmeth "tumor_meth.bed", ref=%ref_dna
+%topo_dna = apply_topology %methyl_dna, sigma=-0.05
+
+%mRNA = transcribe %topo_dna, 
+        promoter_state="repressed" if %methyl_dna.cpg_methylation > 0.8 else "active",
+        sigma=-0.05
+
+%prot_bare = translate %mRNA, table=1
+%prot_active = phosphorylate %prot_bare, motifs=["S[TP]"], kinases=["ATM"]
+
+if %prot_active.seq == "":
+    print "Gene silenced due to hypermethylation!"
